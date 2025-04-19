@@ -1,0 +1,16 @@
+Flask
+flask-cors
+requests
+pymongo
+python-dotenv
+werkzeug
+google-generativeai
+joblib
+PyPDF2
+python-docx
+numpy
+gensim
+tensorflow
+pickle-mixin
+pandas
+nltk
