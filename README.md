@@ -1,8 +1,8 @@
 ASCEND - Advanced Support for Career Exploration and Navigating Directions
 
-![alt text](<WhatsApp Image 2025-04-19 at 09.52.02_025cc6ae.jpg>) ![alt text](<WhatsApp Image 2025-04-19 at 09.52.16_3ae2009f.jpg>) 
+![alt text](<Images/WhatsApp Image 2025-04-19 at 09.52.02_025cc6ae.jpg>) ![alt text](<Images/WhatsApp Image 2025-04-19 at 09.52.16_3ae2009f.jpg>) 
 
-![alt text](<WhatsApp Image2025-04-19 at 09.51.47_64011798.jpg>)
+![alt text](<Images/WhatsApp Image 2025-04-19 at 09.51.47_65c3dfa7.jpg>)
 
 # 🚀 ASCEND – Advanced Support for Career Exploration and Navigating Directions
 
