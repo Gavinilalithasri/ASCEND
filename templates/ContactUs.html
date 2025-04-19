@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Ascend Career Guidance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/join_us.css') }}">
+    <link rel="icon" href="static/assets/Alogo.jpeg">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script>
+    if (!firebase.apps.length) {
+    firebase.initializeApp({
+        apiKey: "AIzaSyCX5fg4A-OYjtapDOKyOUd0iTnxrKX4t7Y",
+        authDomain: "career-mentor-dbffc.firebaseapp.com",
+        projectId: "career-mentor-dbffc",
+        storageBucket: "career-mentor-dbffc.appspot.com",
+        messagingSenderId: "632733746095",
+        appId: "1:632733746095:web:df7f51f135cbdb552d255a",
+        measurementId: "G-PPZRTYYGM6"
+    });
+}
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+    document.addEventListener("DOMContentLoaded", function () {
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
+                // Redirect to login page if not authenticated
+                window.location.href = "login.html";
+            }
+        });
+    });
+
+    "use strict";
+
+document.addEventListener("DOMContentLoaded", function () {
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            // Redirect to login if user is not authenticated
+            window.location.href = "{{ url_for('login') }}";
+        }
+    });
+});
+</script>
+
+</head>
+<body>
+   <header class="header">
+        <a href="{{ url_for('landing') }}"><img src="{{ url_for('static', filename='assets/Ascend.jpeg') }}" alt="logo" class="logo"></a>
+        <nav class="navbar">
+            <a href="{{ url_for('landing') }}" style="color: rgb(12, 12, 12)">Home</a>
+            <a href="{{ url_for('explore') }}"style="color: black">Explore</a>
+            <a href="{{ url_for('chatbot') }}" style="color: rgb(16, 15, 15)">Chatbot</a>
+            <a href="{{ url_for('blogs') }}" style="color: rgb(16, 15, 15)">Blogs</a>
+            <a href="{{ url_for('profile') }}" style="color: rgb(22, 21, 21)">Profile</a>
+        </nav>
+    </header>
+    <main>
+        <section class="policy">
+            <h2>Contact Information</h2>
+            <a href="mailto:ascendvvit@gmail.com">ascendvvit@gmail.com</a>
+            <p>Phone: +91 6303 427 307</p>
+            <p>Address: Uppalapadu Road, Nambur, DT, Pedhakakani Mandal, Guntur, Andhra Pradesh 522508</p>
+        </section>
+        <section class="policy">
+            <section class="policy">
+                <h2>Contact Form</h2>
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdJxjQvHZUDrIfoYGwOfyEHQPBfif3h87n9Tp3b-2ZbV78lkg/viewform?embedded=true" width="640" height="643" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>            </section>
+            
+        </section>
+    </main>
+
+    
+
+</body>

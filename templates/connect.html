@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="static/assets/Alogo.jpeg">
+  <title>Career Guidance - Meet Our Mentors</title>
+  <link rel="stylesheet" href="static/css/connect.css">
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script>
+    if (!firebase.apps.length) {
+    firebase.initializeApp({
+        apiKey: "AIzaSyCX5fg4A-OYjtapDOKyOUd0iTnxrKX4t7Y",
+        authDomain: "career-mentor-dbffc.firebaseapp.com",
+        projectId: "career-mentor-dbffc",
+        storageBucket: "career-mentor-dbffc.appspot.com",
+        messagingSenderId: "632733746095",
+        appId: "1:632733746095:web:df7f51f135cbdb552d255a",
+        measurementId: "G-PPZRTYYGM6"
+    });
+}
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+    document.addEventListener("DOMContentLoaded", function () {
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
+                // Redirect to login page if not authenticated
+                window.location.href = "login.html";
+            }
+        });
+    });
+
+    "use strict";
+
+document.addEventListener("DOMContentLoaded", function () {
+    auth.onAuthStateChanged((user) => {
+        if (!user) {
+            // Redirect to login if user is not authenticated
+            window.location.href = "{{ url_for('login') }}";
+        }
+    });
+});
+</script>
+</head>
+<body>
+<header>
+  <nav>
+    <div class="container">
+      <div class="logo">
+        <a href="{{ url_for('landing') }}"><img src="{{ url_for('static', filename='assets/Ascend.jpeg') }}" alt="logo" class="logo"></a>
+      </div>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search mentors...">
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main class="container">
+  <h2>Our Expert Mentors</h2>
+  <h4>To interact with any mentor, please<a href = "{{ url_for('contact') }}">  contact us</a></h4>
+  <div class="filters">
+    <select id="expertiseFilter">
+      <option value="">All Expertise</option>
+    </select>
+  </div>
+  <div id="mentorsList" class="mentors-grid"></div>
+</main>
+
+<footer class="footer">
+  <div class="footer-content">
+      <div class="footer-section">
+          <h4>About</h4>
+          <a href="{{ url_for('aboutus') }}">About Us</a>
+          <a href="{{ url_for('contact') }}">Contact</a>
+          <a href="{{ url_for('explore') }}">Careers</a>
+      </div>
+      <div class="footer-section">
+          <h4>Resources</h4>
+          <a href="{{ url_for('blogs') }}">Blog</a>
+          <!--a href="#">Guides</a-->
+          <a href="{{ url_for('joinus') }}">Join Us</a>
+      </div>
+      <div class="footer-section">
+          <h4>Legal</h4>
+          <a href="{{ url_for('privacypolicy') }}" style="text-decoration: none">Privacy Policy</a>
+          <a href="{{ url_for('Terms') }}">Terms of Service</a>
+      </div>
+      <div class="footer-section">
+          <h4>Connect</h4>
+          <a href="https://x.com/AscendVvit">Twitter</a>
+          <a href="https://www.linkedin.com/in/ascend-vvit-963b9b352/">LinkedIn</a>
+          <a href="#">Facebook</a>
+      </div>
+  </div>
+  <hr>
+  <br>
+  <p>&copy; 2025 ASCEND VVIT . All rights reserved.<p>
+</footer>
+
+<script src="static/js/connect.js"></script>
+<script src="static/js/Connectdata.js"></script>
+</body>
+</html>

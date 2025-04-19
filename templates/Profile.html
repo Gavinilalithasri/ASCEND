@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="icon" href="static/assets/Alogo.jpeg">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+            background-color: white;
+            box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo {
+            max-width: 150px;
+            padding: 10px;
+            border-radius: 35px;
+        }
+        
+        .navbar a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-size: 1rem;
+        }
+        
+        .navbar a:hover {
+            color: #71c397;
+        }
+        
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 3rem 1rem;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-section h4 {
+            margin-bottom: 1rem;
+        }
+        
+        .footer-section a {
+            color: #a0aec0;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f2ef;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .profile-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            position: sticky;
+            top: 20px;
+            align-self: flex-start;
+        }
+        
+        .profile-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        
+        .profile-card h1 {
+            margin: 10px 0;
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .profile-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .blogs-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            flex-grow: 1;
+        }
+        
+        .blogs-section h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .btn-primary {
+            background-color: #0073b1;
+            color: #fff;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+            color: #fff;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        
+        .blog-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+            text-align: left;
+        }
+        
+        .blog-item h3 {
+            margin: 0;
+            font-size: 20px;
+            color: #0073b1;
+        }
+        
+        .blog-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .blog-item img {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        
+        .blog-item button {
+            margin-right: 10px;
+        }
+        
+        #bio, #skills, #location, #interests, #work, #portfolio, #accounts, #aicteid {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        #bio {
+            resize: vertical;
+        }
+        
+        #save-profile {
+            margin-top: 10 "“px;
+            width: 100%;
+            display: none;
+        }
+        
+        a {
+            color: #0073b1;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .profile-card {
+                position: static;
+                width: 100%;
+                max-width: 600px;
+            }
+            .blogs-section {
+                width: 100%;
+                max-width: 600px;
+            }
+        }
+    </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <header class="header">
+        <a href="{{ url_for('landing') }}"><img src="{{ url_for('static', filename='assets/Ascend.jpeg') }}" alt="logo" class="logo"></a>
+        <nav class="navbar">
+            <a href="{{ url_for('landing') }}">Home</a>
+            <a href="{{ url_for('explore') }}">Explore</a>
+            <a href="{{ url_for('chatbot') }}">Chatbot</a>
+            <a href="{{ url_for('blogs') }}">Blogs</a>
+            <a href="{{ url_for('profile') }}">Profile</a>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <div class="profile-card">
+            <img id="profile-picture" src="{{ url_for('static', filename='assets/default-profile.png') }}" referrerpolicy="no-referrer" alt="Profile Picture">
+            <h1 id="user-name">Guest User</h1>
+            <p>Email: <span id="user-email">No email available</span></p>
+            <p>Member since: <span id="user-creation-time">Unknown</span></p>
+            <p>Location: <span id="location-text">Loading...</span></p>
+            <p>Bio: <span id="bio-text">Loading...</span></p>
+            <p>Interests: <span id="interests-text">Loading...</span></p>
+            <p>Skills: <span id="skills-text">Loading...</span></p>
+            <p>Work: <span id="work-text">Loading...</span></p>
+            <p>Portfolio: <span id="portfolio-text">Loading...</span></p>
+            <p>Accounts: <span id="accounts-text">Loading...</span></p>
+            <p>AicteID: <span id="aicteid-text">Loading...</span></p>
+            
+            <button id="edit-profile" class="btn btn-primary">Edit</button>
+            
+            <input type="text" id="location" placeholder="Enter your location...">
+            <textarea id="bio" placeholder="Write a short bio..."></textarea>
+            <input type="text" id="interests" placeholder="Add your interests...">
+            <input type="text" id="skills" placeholder="Add your skills...">
+            <input type="text" id="work" placeholder="Add work links (e.g., LeetCode)...">
+            <input type="text" id="portfolio" placeholder="Add portfolio links...">
+            <input type="text" id="accounts" placeholder="Add account links (e.g., LinkedIn)...">
+            <input type="text" id="aicteid" placeholder="Enter your AICTE ID...">
+            <input type="file" id="profile-pic-upload" accept="image/*" style="display:none;">
+            
+            <button id="save-profile" onclick="updateProfile()" class="btn btn-success">Save</button>
+            <button onclick="logout()" class="btn btn-danger">Logout</button>
+        </div>
+
+        <div class="blogs-section">
+            <h2>Your Blogs</h2>
+            <div id="blog-form" style="display: none;">
+                <input type="text" id="blog-title" placeholder="Blog Title" class="form-control">
+                <input type="file" id="blog-image" accept="image/*" class="form-control">
+                <textarea id="blog-content" placeholder="Write your blog content..." class="form-control"></textarea>
+                <button id="submit-blog" onclick="submitBlog()" class="btn btn-success">Post Blog</button>
+            </div>
+            <button id="add-blog" class="btn btn-primary">Add Blog</button>
+            <div id="user-blogs">
+                <p>Loading your blogs...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About</h4>
+                <a href="{{ url_for('aboutus') }}">About Us</a>
+                <a href="{{ url_for('contact') }}">Contact</a>
+                <a href="{{ url_for('explore') }}">Careers</a>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <a href="{{ url_for('blogs') }}">Blog</a>
+                <a href="{{ url_for('joinus') }}">Join Us</a>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <a href="{{ url_for('privacypolicy') }}">Privacy Policy</a>
+                <a href="{{ url_for('Terms') }}">Terms of Service</a>
+            </div>
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <a href="https://x.com/AscendVvit">Twitter</a>
+                <a href="https://www.linkedin.com/in/ascend-vvit-963b9b352/">LinkedIn</a>
+                <a href="#">Facebook</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // Firebase initialization
+    if (!firebase.apps.length) {
+        firebase.initializeApp({
+            apiKey: "AIzaSyCX5fg4A-OYjtapDOKyOUd0iTnxrKX4t7Y",
+            authDomain: "career-mentor-dbffc.firebaseapp.com",
+            projectId: "career-mentor-dbffc",
+            storageBucket: "career-mentor-dbffc.appspot.com",
+            messagingSenderId: "632733746095",
+            appId: "1:632733746095:web:df7f51f135cbdb552d255a",
+            measurementId: "G-PPZRTYYGM6"
+        });
+    }
+
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const IMGUR_CLIENT_ID = "c140503f46c2d98";
+
+    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .catch(error => console.error("Persistence Error:", error));
+
+    // Event listeners
+    document.addEventListener("DOMContentLoaded", function () {
+        const refreshCount = sessionStorage.getItem("refreshCount") || 0;
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                console.log("User authenticated:", user.uid);
+                updateUserProfile(user);
+                loadUserBlogs(user.uid);
+                sessionStorage.removeItem("refreshCount");
+            } else {
+                console.log("No user authenticated, redirecting...");
+                if (refreshCount < 2) {
+                    sessionStorage.setItem("refreshCount", Number(refreshCount) + 1);
+                    location.reload();
+                } else {
+                    window.location.href = "/login";
+                }
+            }
+        });
+
+        document.getElementById("edit-profile")?.addEventListener("click", () => toggleEditProfile(true));
+        document.getElementById("add-blog")?.addEventListener("click", () => {
+            document.getElementById("blog-form").style.display = "block";
+        });
+    });
+
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            const refreshCount = sessionStorage.getItem("refreshCount") || 0;
+            if (refreshCount < 2) {
+                sessionStorage.setItem("refreshCount", Number(refreshCount) + 1);
+                location.reload();
+            }
+        }
+    });
+
+    // Update user profile display
+    function updateUserProfile(user) {
+        document.getElementById("user-name").textContent = user.displayName || "No Name";
+        document.getElementById("user-email").textContent = user.email || "No email available";
+        document.getElementById("profile-picture").src = user.photoURL || "/static/assets/default-profile.png";
+        document.getElementById("user-creation-time").textContent = user.metadata.creationTime ? new Date(user.metadata.creationTime).toLocaleDateString() : "Unknown";
+
+        db.collection("users").doc(user.uid).get()
+            .then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    console.log("Profile data loaded:", data);
+                    document.getElementById("location-text").textContent = data.location || "Not specified";
+                    document.getElementById("bio-text").textContent = data.bio || "No bio available";
+                    document.getElementById("interests-text").textContent = data.interests || "No interests added";
+                    document.getElementById("skills-text").textContent = data.skills || "No skills added";
+                    document.getElementById("work-text").innerHTML = data.work ? data.work.split(",").map(link => `<a href="${link.trim()}" target="_blank">${link.trim()}</a>`).join(", ") : "No work links added";
+                    document.getElementById("portfolio-text").innerHTML = data.portfolio ? data.portfolio.split(",").map(link => `<a href="${link.trim()}" target="_blank">${link.trim()}</a>`).join(", ") : "No portfolio links added";
+                    document.getElementById("accounts-text").innerHTML = data.accounts ? data.accounts.split(",").map(link => `<a href="${link.trim()}" target="_blank">${link.trim()}</a>`).join(", ") : "No accounts added";
+                    document.getElementById("aicteid-text").textContent = data.aicteid || "Not specified";
+                } else {
+                    console.log("No profile data found in Firestore, setting defaults");
+                    document.getElementById("location-text").textContent = "Not specified";
+                    document.getElementById("bio-text").textContent = "No bio available";
+                    document.getElementById("interests-text").textContent = "No interests added";
+                    document.getElementById("skills-text").textContent = "No skills added";
+                    document.getElementById("work-text").textContent = "No work links added";
+                    document.getElementById("portfolio-text").textContent = "No portfolio links added";
+                    document.getElementById("accounts-text").textContent = "No accounts added";
+                    document.getElementById("aicteid-text").textContent = "Not specified";
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching profile data:", error);
+                document.getElementById("location-text").textContent = "Error loading";
+                document.getElementById("bio-text").textContent = "Error loading";
+                document.getElementById("interests-text").textContent = "Error loading";
+                document.getElementById("skills-text").textContent = "Error loading";
+                document.getElementById("work-text").textContent = "Error loading";
+                document.getElementById("portfolio-text").textContent = "Error loading";
+                document.getElementById("accounts-text").textContent = "Error loading";
+                document.getElementById("aicteid-text").textContent = "Error loading";
+            });
+    }
+
+    // Toggle edit profile form
+    function toggleEditProfile(show) {
+        document.getElementById("location-text").style.display = show ? "none" : "block";
+        document.getElementById("bio-text").style.display = show ? "none" : "block";
+        document.getElementById("interests-text").style.display = show ? "none" : "block";
+        document.getElementById("skills-text").style.display = show ? "none" : "block";
+        document.getElementById("work-text").style.display = show ? "none" : "block";
+        document.getElementById("portfolio-text").style.display = show ? "none" : "block";
+        document.getElementById("accounts-text").style.display = show ? "none" : "block";
+        document.getElementById("aicteid-text").style.display = show ? "none" : "block";
+
+        document.getElementById("location").style.display = show ? "block" : "none";
+        document.getElementById("bio").style.display = show ? "block" : "none";
+        document.getElementById("interests").style.display = show ? "block" : "none";
+        document.getElementById("skills").style.display = show ? "block" : "none";
+        document.getElementById("work").style.display = show ? "block" : "none";
+        document.getElementById("portfolio").style.display = show ? "block" : "none";
+        document.getElementById("accounts").style.display = show ? "block" : "none";
+        document.getElementById("aicteid").style.display = show ? "block" : "none";
+        document.getElementById("profile-pic-upload").style.display = show ? "block" : "none";
+        document.getElementById("save-profile").style.display = show ? "block" : "none";
+        document.getElementById("edit-profile").style.display = show ? "none" : "block";
+
+        if (show) {
+            const user = auth.currentUser;
+            if (user) {
+                db.collection("users").doc(user.uid).get().then(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        document.getElementById("location").value = data.location || "";
+                        document.getElementById("bio").value = data.bio || "";
+                        document.getElementById("interests").value = data.interests || "";
+                        document.getElementById("skills").value = data.skills || "";
+                        document.getElementById("work").value = data.work || "";
+                        document.getElementById("portfolio").value = data.portfolio || "";
+                        document.getElementById("accounts").value = data.accounts || "";
+                        document.getElementById("aicteid").value = data.aicteid || "";
+                    }
+                });
+            }
+        }
+    }
+
+    // Upload image to Imgur
+    async function uploadImageToImgur(file) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+            const response = await fetch("https://api.imgur.com/3/image", {
+                method: "POST",
+                headers: { Authorization: `Client-ID ${IMGUR_CLIENT_ID}` },
+                body: formData
+            });
+            const data = await response.json();
+            if (!data.success) {
+                throw new Error("Imgur upload failed: " + (data.data?.error || "Unknown error"));
+            }
+            console.log("Image uploaded:", data.data.link);
+            return data.data.link;
+        } catch (error) {
+            console.error("Imgur upload error:", error);
+            throw error;
+        }
+    }
+
+    // Submit a new blog
+    async function submitBlog() {
+        const user = auth.currentUser;
+        if (!user) {
+            alert("Please log in to post a blog.");
+            return;
+        }
+
+        const title = document.getElementById("blog-title").value;
+        const content = document.getElementById("blog-content").value;
+        const imageFile = document.getElementById("blog-image").files[0];
+
+        if (!title || !content) {
+            alert("Please enter a title and content.");
+            return;
+        }
+
+        let imageUrl = "";
+        if (imageFile) {
+            try {
+                imageUrl = await uploadImageToImgur(imageFile);
+            } catch (error) {
+                console.error("Error uploading image:", error);
+                alert("Failed to upload image. Posting without image.");
+            }
+        }
+
+        try {
+            await db.collection("blogs").add({
+                title,
+                content,
+                imageUrl,
+                author: user.displayName || "Anonymous",
+                userId: user.uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Blog posted successfully!");
+            document.getElementById("blog-form").style.display = "none";
+            document.getElementById("blog-title").value = "";
+            document.getElementById("blog-content").value = "";
+            document.getElementById("blog-image").value = "";
+            loadUserBlogs(user.uid);
+        } catch (error) {
+            console.error("Error posting blog:", error);
+            alert("Failed to post blog: " + error.message);
+        }
+    }
+
+    // Load user's blogs
+    function loadUserBlogs(userId) {
+        db.collection("blogs").where("userId", "==", userId).orderBy("timestamp", "desc").get()
+            .then(querySnapshot => {
+                const userBlogs = document.getElementById("user-blogs");
+                userBlogs.innerHTML = "";
+                if (querySnapshot.empty) {
+                    userBlogs.innerHTML = "<p>No blogs yet. Add one above!</p>";
+                    return;
+                }
+                querySnapshot.forEach(doc => {
+                    const blog = doc.data();
+                    const blogElement = document.createElement("div");
+                    blogElement.className = "blog-item";
+                    blogElement.innerHTML = `
+                        <h3>${blog.title}</h3>
+                        ${blog.imageUrl ? `<img src="${blog.imageUrl}" alt="Blog Image" referrerpolicy="no-referrer" style="max-height: 200px;">` : ""}
+                        <p>${blog.content}</p>
+                        <button class="btn btn-primary" onclick="editBlog('${doc.id}', '${blog.title}', '${blog.content}', '${blog.imageUrl || ''}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteBlog('${doc.id}')">Delete</button>
+                    `;
+                    userBlogs.appendChild(blogElement);
+                });
+            }).catch(error => {
+                console.error("Error loading blogs:", error);
+                document.getElementById("user-blogs").innerHTML = "<p>Failed to load blogs. Please try again later.</p>";
+            });
+    }
+
+    // Edit an existing blog
+    function editBlog(blogId, title, content, imageUrl) {
+        document.getElementById("blog-title").value = title;
+        document.getElementById("blog-content").value = content;
+        document.getElementById("blog-form").style.display = "block";
+        document.getElementById("submit-blog").onclick = () => updateBlog(blogId, imageUrl);
+    }
+
+    // Update an existing blog
+    async function updateBlog(blogId, existingImageUrl) {
+        const title = document.getElementById("blog-title").value;
+        const content = document.getElementById("blog-content").value;
+        const imageFile = document.getElementById("blog-image").files[0];
+
+        if (!title || !content) {
+            alert("Please enter a title and content.");
+            return;
+        }
+
+        let imageUrl = existingImageUrl;
+        if (imageFile) {
+            try {
+                imageUrl = await uploadImageToImgur(imageFile);
+            } catch (error) {
+                console.error("Error uploading image:", error);
+                alert("Failed to upload image. Updating without new image.");
+            }
+        }
+
+        try {
+            await db.collection("blogs").doc(blogId).update({
+                title,
+                content,
+                imageUrl,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Blog updated successfully!");
+            document.getElementById("blog-form").style.display = "none";
+            loadUserBlogs(auth.currentUser.uid);
+        } catch (error) {
+            console.error("Error updating blog:", error);
+            alert("Failed to update blog: " + error.message);
+        }
+    }
+
+    // Delete a blog
+    function deleteBlog(blogId) {
+        if (confirm("Are you sure you want to delete this blog?")) {
+            db.collection("blogs").doc(blogId).delete()
+                .then(() => {
+                    alert("Blog deleted successfully!");
+                    loadUserBlogs(auth.currentUser.uid);
+                })
+                .catch(error => {
+                    console.error("Error deleting blog:", error);
+                    alert("Failed to delete blog: " + error.message);
+                });
+        }
+    }
+
+    // Update user profile
+    async function updateProfile() {
+        const user = auth.currentUser;
+        if (!user) {
+            alert("Please log in to update your profile.");
+            return;
+        }
+
+        const profileData = {
+            location: document.getElementById("location").value || "",
+            bio: document.getElementById("bio").value || "",
+            interests: document.getElementById("interests").value || "",
+            skills: document.getElementById("skills").value || "",
+            work: document.getElementById("work").value || "",
+            portfolio: document.getElementById("portfolio").value || "",
+            accounts: document.getElementById("accounts").value || "",
+            aicteid: document.getElementById("aicteid").value || ""
+        };
+
+        const profilePicFile = document.getElementById("profile-pic-upload").files[0];
+        let profilePicUrl = user.photoURL;
+
+        if (profilePicFile) {
+            try {
+                profilePicUrl = await uploadImageToImgur(profilePicFile);
+            } catch (error) {
+                console.error("Error uploading profile picture:", error);
+                alert("Failed to upload profile picture. Saving without it.");
+            }
+        }
+
+        try {
+            // Use set with merge to ensure document exists and updates only provided fields
+            await db.collection("users").doc(user.uid).set({
+                ...profileData,
+                photoURL: profilePicUrl
+            }, { merge: true });
+
+            await user.updateProfile({ photoURL: profilePicUrl });
+            alert("Profile updated successfully!");
+            toggleEditProfile(false);
+            updateUserProfile(user);
+        } catch (error) {
+            console.error("Error updating profile:", error);
+            alert("Failed to update profile: " + error.message);
+        }
+    }
+
+    // Logout
+    function logout() {
+        auth.signOut()
+            .then(() => window.location.href = "/login")
+            .catch(error => console.error("Logout error:", error));
+    }
+    </script>
+</body>
+</html>
